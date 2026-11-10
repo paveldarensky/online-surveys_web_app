@@ -2,6 +2,12 @@ import { Router } from 'express';
 import { asyncHandler } from '../errors.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 import {
+  createQuestion,
+  deleteQuestion,
+  listQuestions,
+  updateQuestion,
+} from '../services/questions.js';
+import {
   closeSurvey,
   createSurvey,
   deleteSurvey,
@@ -47,5 +53,25 @@ surveysRouter.post('/:id/close', asyncHandler(async (req, res) => {
 
 surveysRouter.delete('/:id', asyncHandler(async (req, res) => {
   await deleteSurvey(req.user.id, req.params.id);
+  res.status(204).end();
+}));
+
+surveysRouter.get('/:id/questions', asyncHandler(async (req, res) => {
+  const questions = await listQuestions(req.user.id, req.params.id);
+  res.json({ questions });
+}));
+
+surveysRouter.post('/:id/questions', asyncHandler(async (req, res) => {
+  const question = await createQuestion(req.user.id, req.params.id, req.body ?? {});
+  res.status(201).json({ question });
+}));
+
+surveysRouter.patch('/:id/questions/:questionId', asyncHandler(async (req, res) => {
+  const question = await updateQuestion(req.user.id, req.params.id, req.params.questionId, req.body ?? {});
+  res.json({ question });
+}));
+
+surveysRouter.delete('/:id/questions/:questionId', asyncHandler(async (req, res) => {
+  await deleteQuestion(req.user.id, req.params.id, req.params.questionId);
   res.status(204).end();
 }));

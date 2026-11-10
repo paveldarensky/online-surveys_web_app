@@ -52,6 +52,14 @@ async function findOwned(authorId, id) {
   return toSurvey(result.rows[0]);
 }
 
+export async function requireOwnedSurvey(authorId, id, { editable = false } = {}) {
+  const survey = await findOwned(authorId, id);
+  if (editable && survey.status !== 'draft') {
+    throw new HttpError(409, 'Вопросы можно менять только в черновике');
+  }
+  return survey;
+}
+
 async function insertSurvey(authorId, title, description) {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const slug = randomBytes(9).toString('base64url');
