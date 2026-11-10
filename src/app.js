@@ -1,5 +1,7 @@
 import express from 'express';
 import { checkConnection } from './db/pool.js';
+import { HttpError } from './errors.js';
+import { authRouter } from './routes/auth.js';
 
 export function createApp() {
   const app = express();
@@ -16,7 +18,17 @@ export function createApp() {
     }
   });
 
+  app.use('/api/auth', authRouter);
+
   app.use((error, _req, res, _next) => {
+    if (error instanceof SyntaxError && error.status === 400 && 'body' in error) {
+      res.status(400).json({ error: 'Некорректный JSON' });
+      return;
+    }
+    if (error instanceof HttpError) {
+      res.status(error.status).json({ error: error.message });
+      return;
+    }
     console.error(error);
     res.status(500).json({ error: 'Внутренняя ошибка сервера' });
   });

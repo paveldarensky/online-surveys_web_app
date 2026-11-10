@@ -2,6 +2,7 @@ import { createApp } from './app.js';
 import { config } from './config.js';
 import { migrate } from './db/migrate.js';
 import { checkConnection, pool } from './db/pool.js';
+import { ensureAdmin } from './services/users.js';
 
 async function waitForDatabase(attempts = 30, delayMs = 1000) {
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
@@ -19,6 +20,7 @@ async function waitForDatabase(attempts = 30, delayMs = 1000) {
 async function main() {
   await waitForDatabase();
   await migrate();
+  await ensureAdmin();
   const app = createApp();
   const server = app.listen(config.port, () => {
     console.log(`Сервер слушает порт ${config.port}`);
