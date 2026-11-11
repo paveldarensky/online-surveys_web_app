@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { asyncHandler } from '../errors.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 import { getSurveyAnalytics } from '../services/analytics.js';
+import { buildSurveyExport } from '../services/export.js';
+import { renderResultsPdf } from '../services/pdfReport.js';
 import {
   createQuestion,
   deleteQuestion,
@@ -40,6 +42,21 @@ surveysRouter.get('/:id', asyncHandler(async (req, res) => {
 surveysRouter.get('/:id/analytics', asyncHandler(async (req, res) => {
   const analytics = await getSurveyAnalytics(req.user.id, req.params.id);
   res.json({ analytics });
+}));
+
+surveysRouter.get('/:id/export/json', asyncHandler(async (req, res) => {
+  const report = await buildSurveyExport(req.user.id, req.params.id);
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('Content-Disposition', `attachment; filename="survey-${report.survey.publicSlug}.json"`);
+  res.send(`${JSON.stringify(report, null, 2)}\n`);
+}));
+
+surveysRouter.get('/:id/export/pdf', asyncHandler(async (req, res) => {
+  const report = await buildSurveyExport(req.user.id, req.params.id);
+  const pdf = await renderResultsPdf(report);
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename="survey-${report.survey.publicSlug}.pdf"`);
+  res.send(pdf);
 }));
 
 surveysRouter.patch('/:id', asyncHandler(async (req, res) => {

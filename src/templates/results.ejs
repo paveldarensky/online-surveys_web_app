@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title><%= survey.title %></title>
+  <style>
+    body { font-family: "DejaVu Sans", sans-serif; color: #1c1c1c; font-size: 12px; line-height: 1.45; }
+    h1 { font-size: 22px; margin: 0 0 6px; }
+    h2 { font-size: 15px; margin: 18px 0 6px; }
+    p { margin: 0 0 8px; }
+    .muted { color: #555; }
+    table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; }
+    th, td { border: 1px solid #d0d0d0; padding: 5px 8px; text-align: left; vertical-align: top; }
+    th { background: #f4f4f4; }
+    .response { border: 1px solid #d0d0d0; padding: 8px 10px; margin: 0 0 8px; page-break-inside: avoid; }
+    .response h3 { font-size: 13px; margin: 0 0 4px; }
+    ul { margin: 4px 0 0; padding-left: 18px; }
+  </style>
+</head>
+<body>
+  <h1><%= survey.title %></h1>
+  <% if (survey.description) { %><p><%= survey.description %></p><% } %>
+  <p class="muted">Ответов: <%= responseCount %>. Выгружено <%= formatDate(exportedAt) %>.</p>
+
+  <% if (questions.length === 0) { %>
+    <p>В опросе пока нет вопросов.</p>
+  <% } %>
+  <% questions.forEach(function (question) { %>
+    <h2><%= question.position + 1 %>. <%= question.text %></h2>
+    <p class="muted">Тип: <%= question.type %>. Ответили: <%= question.answeredCount %>.</p>
+    <% if (question.type === 'single' || question.type === 'multi') { %>
+      <table>
+        <thead><tr><th>Вариант</th><th>Ответов</th><th>Доля</th></tr></thead>
+        <tbody>
+          <% question.options.forEach(function (option) { %>
+            <tr>
+              <td><%= option.text %></td>
+              <td><%= option.count %></td>
+              <td><%= percent(option.share) %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else if (question.type === 'text') { %>
+      <% if (question.answers.length === 0) { %>
+        <p>Текстовых ответов нет.</p>
+      <% } else { %>
+        <ul>
+          <% question.answers.forEach(function (answer) { %><li><%= answer %></li><% }) %>
+        </ul>
+      <% } %>
+    <% } else { %>
+      <p>Среднее: <%= question.average === null ? '—' : question.average %>.</p>
+      <table>
+        <thead><tr><th>Значение</th><th>Ответов</th></tr></thead>
+        <tbody>
+          <% question.distribution.forEach(function (item) { %>
+            <tr><td><%= item.value %></td><td><%= item.count %></td></tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  <% }) %>
+
+  <h2>Прохождения</h2>
+  <% if (responses.length === 0) { %>
+    <p>Ответов пока нет.</p>
+  <% } else { %>
+    <% responses.forEach(function (response, index) { %>
+      <div class="response">
+        <h3><%= index + 1 %>. <%= response.respondentName %></h3>
+        <p class="muted"><%= formatDate(response.createdAt) %></p>
+        <ul>
+          <% response.answers.forEach(function (answer) { %>
+            <li><%= answer.question %>: <%= answer.display %></li>
+          <% }) %>
+        </ul>
+      </div>
+    <% }) %>
+  <% } %>
+</body>
+</html>

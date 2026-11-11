@@ -20,4 +20,5 @@ export const config = {
   adminName: process.env.ADMIN_NAME ?? 'Администратор',
   rateLimitWindowMs: numberFromEnv('RATE_LIMIT_WINDOW_MS', 60 * 60 * 1000),
   rateLimitMax: numberFromEnv('RATE_LIMIT_MAX', 10),
+  chromePath: process.env.CHROME_PATH ?? '/usr/bin/chromium',
 };
