@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { asyncHandler } from '../errors.js';
 import { requireAuth, requireRole } from '../middleware/auth.js';
+import { getSurveyAnalytics } from '../services/analytics.js';
 import {
   createQuestion,
   deleteQuestion,
@@ -34,6 +35,11 @@ surveysRouter.get('/', asyncHandler(async (req, res) => {
 surveysRouter.get('/:id', asyncHandler(async (req, res) => {
   const survey = await getSurvey(req.user.id, req.params.id);
   res.json({ survey });
+}));
+
+surveysRouter.get('/:id/analytics', asyncHandler(async (req, res) => {
+  const analytics = await getSurveyAnalytics(req.user.id, req.params.id);
+  res.json({ analytics });
 }));
 
 surveysRouter.patch('/:id', asyncHandler(async (req, res) => {
