@@ -17,6 +17,7 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.13.1",
-    "puppeteer-core": "^24.15.0"
+    "puppeteer-core": "^24.15.0",
+    "swagger-ui-express": "^5.0.1"
   }
 }

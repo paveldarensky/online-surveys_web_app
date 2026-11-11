@@ -1,5 +1,7 @@
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
 import { checkConnection } from './db/pool.js';
+import { openapi } from './docs/openapi.js';
 import { HttpError } from './errors.js';
 import { authRouter } from './routes/auth.js';
 import { publicRouter } from './routes/publicSurveys.js';
@@ -10,6 +12,10 @@ export function createApp() {
 
   app.disable('x-powered-by');
   app.use(express.json());
+
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapi, {
+    customSiteTitle: 'Онлайн-опросы',
+  }));
 
   app.get('/health', async (_req, res, next) => {
     try {
