@@ -31,6 +31,15 @@ export function requireAuth(req, _res, next) {
     .catch(next);
 }
 
+export function optionalAuth(req, res, next) {
+  const header = req.headers.authorization ?? '';
+  if (!header.trim()) {
+    next();
+    return;
+  }
+  requireAuth(req, res, next);
+}
+
 export function requireRole(...roles) {
   return (req, _res, next) => {
     if (!req.user || !roles.includes(req.user.role)) {
