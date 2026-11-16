@@ -1,3 +1,5 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import { checkConnection } from './db/pool.js';
@@ -6,6 +8,8 @@ import { HttpError } from './errors.js';
 import { authRouter } from './routes/auth.js';
 import { publicRouter } from './routes/publicSurveys.js';
 import { surveysRouter } from './routes/surveys.js';
+
+const publicDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../public');
 
 export function createApp() {
   const app = express();
@@ -29,6 +33,11 @@ export function createApp() {
   app.use('/api/auth', authRouter);
   app.use('/api/surveys', surveysRouter);
   app.use('/api/public', publicRouter);
+
+  app.get('/s/:slug', (_req, res) => {
+    res.sendFile(path.join(publicDir, 'take.html'));
+  });
+  app.use(express.static(publicDir));
 
   app.use((error, _req, res, _next) => {
     if (error instanceof SyntaxError && error.status === 400 && 'body' in error) {

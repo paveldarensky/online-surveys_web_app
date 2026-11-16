@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Вход — онлайн-опросы</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <main class="auth-card stack">
+    <h1>Онлайн-опросы</h1>
+    <div class="tabs">
+      <button type="button" class="active" data-tab="login">Вход</button>
+      <button type="button" data-tab="register">Регистрация</button>
+    </div>
+    <p class="error" data-error hidden></p>
+    <form id="login">
+      <label>Email <input name="email" type="email" autocomplete="username" required></label>
+      <label>Пароль <input name="password" type="password" autocomplete="current-password" required></label>
+      <button class="primary" type="submit">Войти</button>
+    </form>
+    <form id="register" hidden>
+      <label>Имя <input name="name" autocomplete="name" required></label>
+      <label>Email <input name="email" type="email" autocomplete="email" required></label>
+      <label>Пароль <input name="password" type="password" minlength="8" autocomplete="new-password" required></label>
+      <button class="primary" type="submit">Создать аккаунт</button>
+      <p class="muted">Регистрация создаёт респондента. Опросы создаёт администратор.</p>
+    </form>
+    <p class="muted">Локальный администратор: admin@example.com / admin12345</p>
+  </main>
+  <script type="module" src="/js/login.js"></script>
+</body>
+</html>

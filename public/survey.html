@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Опрос</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/surveys.html">Опросы</a>
+    <nav>
+      <a href="/docs">API</a>
+      <span data-user></span>
+      <button type="button" data-logout>Выйти</button>
+    </nav>
+  </header>
+  <main class="page stack">
+    <h1 id="heading">Новый опрос</h1>
+    <p class="error" data-error hidden></p>
+    <form id="survey-form" class="card">
+      <label>Название <input name="title" required maxlength="200"></label>
+      <label>Описание <textarea name="description" maxlength="4000"></textarea></label>
+      <div class="row">
+        <button class="primary" type="submit">Сохранить</button>
+        <span id="status" class="pill" hidden></span>
+      </div>
+    </form>
+    <section id="manage" class="card stack" hidden>
+      <div class="row">
+        <button type="button" id="publish" hidden>Опубликовать</button>
+        <button type="button" id="close" hidden>Закрыть приём ответов</button>
+        <button type="button" id="remove" class="danger" hidden>Удалить черновик</button>
+        <a class="button" id="results" hidden>Результаты</a>
+      </div>
+      <label>Публичная ссылка
+        <input id="public-link" readonly>
+      </label>
+    </section>
+    <section id="questions" class="stack" hidden>
+      <h2>Вопросы</h2>
+      <div id="question-list" class="question-list"></div>
+      <form id="question-form" class="card">
+        <h3 id="question-heading">Новый вопрос</h3>
+        <label>Текст <input name="text" required maxlength="1000"></label>
+        <label>Тип
+          <select name="type">
+            <option value="single">Один вариант</option>
+            <option value="multi">Несколько вариантов</option>
+            <option value="text">Текст</option>
+            <option value="scale">Шкала</option>
+          </select>
+        </label>
+        <label class="inline"><input name="required" type="checkbox" checked> Обязательный</label>
+        <div class="choice" data-panel="choice">
+          <div data-options></div>
+          <button type="button" data-add-option>Добавить вариант</button>
+        </div>
+        <div class="scale-field" data-panel="scale" hidden>
+          <label>От <input name="scaleMin" type="number" value="1"></label>
+          <label>До <input name="scaleMax" type="number" value="5"></label>
+        </div>
+        <div class="row">
+          <button class="primary" type="submit" id="question-submit">Добавить вопрос</button>
+          <button type="button" id="cancel-edit" hidden>Отмена</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <script type="module" src="/js/survey.js"></script>
+</body>
+</html>
